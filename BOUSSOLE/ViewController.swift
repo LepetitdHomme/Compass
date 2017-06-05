@@ -14,30 +14,34 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     //outlet boussole
     @IBOutlet weak var arrow: UIImageView!
     
-    var heading:CLLocationManager!
+    var locationManager = CLLocationManager()
     
-    func Heading(_ manager: CLLocationManager, didUpdateHeading new: CLHeading){
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading){
         UIView.animate(withDuration:0.4){
-            let angle = CGFloat(new.trueHeading) * .pi / 180
+            var angle = CGFloat(-newHeading.trueHeading) * .pi / 180
+            switch UIDevice.current.orientation{
+            case .faceDown:
+                angle = -angle
+            default:
+                angle = 0 + angle
+            }
             self.arrow.transform = CGAffineTransform(rotationAngle: CGFloat(angle))
+            print (CGFloat(angle))
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        heading = CLLocationManager()
-        heading.delegate = self
-        heading.startUpdatingHeading()
+        if (CLLocationManager.headingAvailable()){
+            locationManager.headingFilter = 1
+            locationManager.startUpdatingHeading()
+            locationManager.delegate = self
+        }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-        
-       
-        
     }
-
-
 }
 
