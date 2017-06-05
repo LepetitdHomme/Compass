@@ -19,11 +19,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading){
         UIView.animate(withDuration:0.4){
             var angle = CGFloat(-newHeading.trueHeading) * .pi / 180
-            switch UIDevice.current.orientation{
+            switch UIDevice.current.orientation {
             case .faceDown:
                 angle = -angle
             default:
                 angle = 0 + angle
+            }
+            switch UIApplication.shared.statusBarOrientation {
+            case .landscapeLeft: angle += 90
+            case .landscapeRight: angle -= 90
+            default:angle = 0 + angle
             }
             self.arrow.transform = CGAffineTransform(rotationAngle: CGFloat(angle))
             print (CGFloat(angle))
